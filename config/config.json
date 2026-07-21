@@ -1,0 +1,14 @@
+{
+  "registerChannel": "PASTE_REGISTER_CHANNEL_ID",
+  "roles": {
+    "uhc": "UHC_ROLE_ID",
+    "pot": "POT_ROLE_ID",
+    "mace": "MACE_ROLE_ID",
+    "nethop": "NETHOP_ROLE_ID",
+    "smp": "SMP_ROLE_ID",
+    "sword": "SWORD_ROLE_ID",
+    "axe": "AXE_ROLE_ID",
+    "vanilla": "VANILLA_ROLE_ID",
+    "cart": "CART_ROLE_ID"
+  }
+}
