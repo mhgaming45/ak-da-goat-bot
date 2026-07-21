@@ -28,7 +28,28 @@ client.once("ready", () => {
 
 client.on("interactionCreate", async interaction => {
   if (interaction.isChatInputCommand()) {
-    const command = client.commands.get(interaction.commandName);
+   if (interaction.isButton()) {
+  if (interaction.customId === "register") {
+    return interaction.reply({
+      content: "🛠️ Register modal next step me add karenge.",
+      ephemeral: true
+    });
+  }
+
+  const roles = {
+    uhc: "UHC",
+    pot: "Pot",
+    sword: "Sword",
+    axe: "Axe"
+  };
+
+  if (roles[interaction.customId]) {
+    return interaction.reply({
+      content: `✅ You clicked **${roles[interaction.customId]}**.`,
+      ephemeral: true
+    });
+  }
+   } const command = client.commands.get(interaction.commandName);
     if (!command) return;
 
     try {
