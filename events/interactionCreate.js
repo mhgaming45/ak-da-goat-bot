@@ -6,57 +6,50 @@ const {
   ActionRowBuilder
 } = require("discord.js");
 
+const config = require("../config/config.json");
+
 module.exports = {
   name: Events.InteractionCreate,
 
   async execute(interaction) {
 
-    // Slash Command
+    // Slash Commands
     if (interaction.isChatInputCommand()) {
       const command = interaction.client.commands.get(interaction.commandName);
       if (!command) return;
 
-      try {
-        await command.execute(interaction);
-      } catch (err) {
-        console.error(err);
-      }
+      return command.execute(interaction);
     }
 
     // Register Button
-    if (interaction.isButton()) {
-      if (interaction.customId === "register") {
+    if (interaction.isButton() && interaction.customId === "register") {
 
-        const modal = new ModalBuilder()
-          .setCustomId("register_modal")
-          .setTitle("Register");
+      const modal = new ModalBuilder()
+        .setCustomId("register_modal")
+        .setTitle("Register");
 
-        const ign = new TextInputBuilder()
-          .setCustomId("ign")
-          .setLabel("Minecraft Username")
-          .setStyle(TextInputStyle.Short)
-          .setRequired(true);
+      const ign = new TextInputBuilder()
+        .setCustomId("ign")
+        .setLabel("Minecraft Username")
+        .setStyle(TextInputStyle.Short)
+        .setRequired(true);
 
-        const region = new TextInputBuilder()
-          .setCustomId("region")
-          .setLabel("Region")
-          .setStyle(TextInputStyle.Short)
-          .setRequired(true);
+      const region = new TextInputBuilder()
+        .setCustomId("region")
+        .setLabel("Region")
+        .setStyle(TextInputStyle.Short)
+        .setRequired(true);
 
-        modal.addComponents(
-          new ActionRowBuilder().addComponents(ign),
-          new ActionRowBuilder().addComponents(region)
-        );
+      modal.addComponents(
+        new ActionRowBuilder().addComponents(ign),
+        new ActionRowBuilder().addComponents(region)
+      );
 
-        await interaction.showModal(modal);
-      }
+      return interaction.showModal(modal);
     }
 
-    // Modal Submit
-    if (interaction.isModalSubmit())     // Gamemode Buttons
+    // Gamemode Buttons
     if (interaction.isButton()) {
-
-      const config = require("../config/config.json");
 
       const roles = {
         uhc: config.roles.uhc,
@@ -88,18 +81,18 @@ module.exports = {
           ephemeral: true
         });
       }
-    }{
-      if (interaction.customId === "register_modal") {
-
-        const ign = interaction.fields.getTextInputValue("ign");
-        const region = interaction.fields.getTextInputValue("region");
-
-        await interaction.reply({
-          content: `✅ Registered!\nIGN: **${ign}**\nRegion: **${region}**`,
-          ephemeral: true
-        });
-      }
     }
 
+    // Modal Submit
+    if (interaction.isModalSubmit() && interaction.customId === "register_modal") {
+
+      const ign = interaction.fields.getTextInputValue("ign");
+      const region = interaction.fields.getTextInputValue("region");
+
+      return interaction.reply({
+        content: `✅ Registered!\nIGN: **${ign}**\nRegion: **${region}**`,
+        ephemeral: true
+      });
+    }
   }
 };
