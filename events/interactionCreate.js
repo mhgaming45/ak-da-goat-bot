@@ -90,10 +90,15 @@ module.exports = {
       const ign = interaction.fields.getTextInputValue("ign");
       const region = interaction.fields.getTextInputValue("region");
 
-      return interaction.reply({
-        content: `✅ Registered!\nIGN: **${ign}**\nRegion: **${region}**`,
-        ephemeral: true
-      });
+    await db.set(`user_${interaction.user.id}`, {
+  ign,
+  region
+});
+
+return interaction.reply({
+  content: "✅ Registration completed successfully!",
+  ephemeral: true
+  });
+}
     }
-  }
-};
+  }:
