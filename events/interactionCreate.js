@@ -94,7 +94,23 @@ module.exports = {
   ign,
   region
 });
+const { EmbedBuilder } = require("discord.js");
 
+const logChannel = interaction.guild.channels.cache.get(config.logChannel);
+
+if (logChannel) {
+  const embed = new EmbedBuilder()
+    .setTitle("📝 New Registration")
+    .addFields(
+      { name: "User", value: `${interaction.user.tag}`, inline: true },
+      { name: "IGN", value: ign, inline: true },
+      { name: "Region", value: region, inline: true }
+    )
+    .setColor("Blue")
+    .setTimestamp();
+
+  await logChannel.send({ embeds: [embed] });
+}
 return interaction.reply({
   content: "✅ Registration completed successfully!",
   ephemeral: true
