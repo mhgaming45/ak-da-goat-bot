@@ -1,3 +1,5 @@
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+
 const row2 = new ActionRowBuilder().addComponents(
   new ButtonBuilder().setCustomId("uhc").setLabel("UHC").setStyle(ButtonStyle.Secondary),
   new ButtonBuilder().setCustomId("pot").setLabel("Pot").setStyle(ButtonStyle.Secondary),
