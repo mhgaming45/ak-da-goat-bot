@@ -5,7 +5,11 @@ const path = require("path");
 const {
   Client,
   Collection,
-  GatewayIntentBits
+  GatewayIntentBits,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+  ActionRowBuilder
 } = require("discord.js");
 
 const client = new Client({
