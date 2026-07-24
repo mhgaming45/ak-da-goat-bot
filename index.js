@@ -84,3 +84,12 @@ client.on("interactionCreate", async (interaction) => {
 });
 
 client.login(process.env.TOKEN);
+const http = require("http");
+
+const server = http.createServer((req, res) => {
+  res.end("Bot is online!");
+});
+
+server.listen(process.env.PORT || 3000, () => {
+  console.log("Web server started");
+});
