@@ -5,11 +5,7 @@ const path = require("path");
 const {
   Client,
   Collection,
-  GatewayIntentBits,
-  ModalBuilder,
-  TextInputBuilder,
-  TextInputStyle,
-  ActionRowBuilder
+  GatewayIntentBits
 } = require("discord.js");
 
 const client = new Client({
@@ -77,42 +73,14 @@ client.on("interactionCreate", async (interaction) => {
       cart: "Cart"
     };
 
-    if (interaction.customId === "register") {
-
-  const modal = new ModalBuilder()
-    .setCustomId("register_modal")
-    .setTitle("Register");
-
-  const ign = new TextInputBuilder()
-    .setCustomId("ign")
-    .setLabel("Minecraft Username")
-    .setStyle(TextInputStyle.Short)
-    .setRequired(true);
-
-  const region = new TextInputBuilder()
-    .setCustomId("region")
-    .setLabel("Region")
-    .setStyle(TextInputStyle.Short)
-    .setRequired(true);
-
-  modal.addComponents(
-    new ActionRowBuilder().addComponents(ign),
-    new ActionRowBuilder().addComponents(region)
-  );
-
-  return interaction.showModal(modal);
-}
+    if (gamemodes[interaction.customId]) {
+      return interaction.reply({
+        content: `✅ You selected **${gamemodes[interaction.customId]}**.`,
+        ephemeral: true
+      });
+    }
   }
 
 });
 
 client.login(process.env.TOKEN);
-const http = require("http");
-
-const server = http.createServer((req, res) => {
-  res.end("Bot is online!");
-});
-
-server.listen(process.env.PORT || 3000, () => {
-  console.log("Web server started");
-});
