@@ -77,12 +77,31 @@ client.on("interactionCreate", async (interaction) => {
       cart: "Cart"
     };
 
-    if (gamemodes[interaction.customId]) {
-      return interaction.reply({
-        content: `✅ You selected **${gamemodes[interaction.customId]}**.`,
-        ephemeral: true
-      });
-    }
+    if (interaction.customId === "register") {
+
+  const modal = new ModalBuilder()
+    .setCustomId("register_modal")
+    .setTitle("Register");
+
+  const ign = new TextInputBuilder()
+    .setCustomId("ign")
+    .setLabel("Minecraft Username")
+    .setStyle(TextInputStyle.Short)
+    .setRequired(true);
+
+  const region = new TextInputBuilder()
+    .setCustomId("region")
+    .setLabel("Region")
+    .setStyle(TextInputStyle.Short)
+    .setRequired(true);
+
+  modal.addComponents(
+    new ActionRowBuilder().addComponents(ign),
+    new ActionRowBuilder().addComponents(region)
+  );
+
+  return interaction.showModal(modal);
+}
   }
 
 });
