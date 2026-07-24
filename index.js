@@ -27,6 +27,51 @@ client.once("ready", () => {
 });
 
 client.on("interactionCreate", async interaction => {
+
+  // Slash Commands
+  if (interaction.isChatInputCommand()) {
+    const command = client.commands.get(interaction.commandName);
+    if (!command) return;
+
+    try {
+      await command.execute(interaction);
+    } catch (err) {
+      console.error(err);
+    }
+    return;
+  }
+
+  // Buttons
+  if (interaction.isButton()) {
+
+    if (interaction.customId === "register") {
+      return interaction.reply({
+        content: "🛠️ Register modal next step me add karenge.",
+        ephemeral: true
+      });
+    }
+
+    const roles = {
+      uhc: "UHC",
+      pot: "Pot",
+      mace: "Mace",
+      nethop: "NetHop",
+      smp: "SMP",
+      sword: "Sword",
+      axe: "Axe",
+      vanilla: "Vanilla",
+      cart: "Cart"
+    };
+
+    if (roles[interaction.customId]) {
+      return interaction.reply({
+        content: `✅ You clicked **${roles[interaction.customId]}**.`,
+        ephemeral: true
+      });
+    }
+  }
+
+});
   if (interaction.isChatInputCommand()) {
    if (interaction.isButton()) {
   if (interaction.customId === "register") {
