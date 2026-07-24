@@ -210,7 +210,6 @@ client.on("interactionCreate", async (interaction) => {
 client.login(process.env.TOKEN);
 
 // Web Server for Render
-const http = require("http");
 
 http.createServer((req, res) => {
   res.writeHead(200);
