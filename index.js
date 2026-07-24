@@ -93,3 +93,128 @@ client.on("interactionCreate", async (interaction) => {
 
     return interaction.showModal(modal);
   }
+  // Modal Submit
+  if (interaction.isModalSubmit() && interaction.customId === "register_modal") {
+
+    const ign = interaction.fields.getTextInputValue("ign");
+    const region = interaction.fields.getTextInputValue("region");
+    const account = interaction.fields.getTextInputValue("account");
+
+    await db.set(`user_${interaction.user.id}`, {
+      ign,
+      region,
+      account
+    });
+
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("uhc")
+        .setLabel("UHC")
+        .setStyle(ButtonStyle.Secondary),
+
+      new ButtonBuilder()
+        .setCustomId("pot")
+        .setLabel("Pot")
+        .setStyle(ButtonStyle.Secondary),
+
+      new ButtonBuilder()
+        .setCustomId("mace")
+        .setLabel("Mace")
+        .setStyle(ButtonStyle.Secondary),
+
+      new ButtonBuilder()
+        .setCustomId("nethop")
+        .setLabel("NetHop")
+        .setStyle(ButtonStyle.Secondary),
+
+      new ButtonBuilder()
+        .setCustomId("smp")
+        .setLabel("SMP")
+        .setStyle(ButtonStyle.Secondary)
+    );
+
+    const row2 = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("sword")
+        .setLabel("Sword")
+        .setStyle(ButtonStyle.Secondary),
+
+      new ButtonBuilder()
+        .setCustomId("axe")
+        .setLabel("Axe")
+        .setStyle(ButtonStyle.Secondary),
+
+      new ButtonBuilder()
+        .setCustomId("vanilla")
+        .setLabel("Vanilla")
+        .setStyle(ButtonStyle.Secondary),
+
+      new ButtonBuilder()
+        .setCustomId("cart")
+        .setLabel("Cart")
+        .setStyle(ButtonStyle.Secondary)
+    );
+
+    return interaction.reply({
+      content:
+        "✅ Registration completed!\n\nNow choose your gamemode.",
+      components: [row, row2],
+      ephemeral: true
+    });
+  }
+  // Gamemode Buttons
+  if (interaction.isButton()) {
+
+    const data = await db.get(`user_${interaction.user.id}`);
+
+    if (!data) {
+      return interaction.reply({
+        content: "❌ Please register first using the Register button.",
+        ephemeral: true
+      });
+    }
+
+    const roles = {
+      uhc: config.roles.uhc,
+      pot: config.roles.pot,
+      mace: config.roles.mace,
+      nethop: config.roles.nethop,
+      smp: config.roles.smp,
+      sword: config.roles.sword,
+      axe: config.roles.axe,
+      vanilla: config.roles.vanilla,
+      cart: config.roles.cart
+    };
+
+    if (roles[interaction.customId]) {
+
+      // Remove old gamemode roles
+      for (const id of Object.values(roles)) {
+        if (interaction.member.roles.cache.has(id)) {
+          await interaction.member.roles.remove(id).catch(() => {});
+        }
+      }
+
+      // Add new role
+      await interaction.member.roles.add(roles[interaction.customId]);
+
+      return interaction.reply({
+        content: `✅ You have been added to **${interaction.customId.toUpperCase()}**.`,
+        ephemeral: true
+      });
+    }
+  }
+
+});
+
+client.login(process.env.TOKEN);
+
+// Web Server for Render
+const http = require("http");
+
+http.createServer((req, res) => {
+  res.writeHead(200);
+  res.end("Bot Online");
+}).listen(process.env.PORT || 3000, () => {
+  console.log("Web server started.");
+});
