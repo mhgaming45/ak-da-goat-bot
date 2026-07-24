@@ -1,5 +1,8 @@
 require("dotenv").config();
 
+const fs = require("fs");
+const path = require("path");
+const http = require("http");
 const {
   Client,
   Collection,
@@ -7,8 +10,15 @@ const {
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
-  ActionRowBuilder
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle
 } = require("discord.js");
+
+const { QuickDB } = require("quick.db");
+const db = new QuickDB();
+
+const config = require("./config/config.json");
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds]
@@ -28,12 +38,12 @@ for (const file of commandFiles) {
   }
 }
 
-// Bot Ready
+// Ready
 client.once("ready", () => {
   console.log(`${client.user.tag} is online!`);
 });
 
-// Interaction Handler
+// Interaction
 client.on("interactionCreate", async (interaction) => {
 
   // Slash Commands
@@ -45,53 +55,41 @@ client.on("interactionCreate", async (interaction) => {
       await command.execute(interaction);
     } catch (err) {
       console.error(err);
-      await interaction.reply({
-        content: "❌ Error while executing command.",
-        ephemeral: true
-      });
     }
+
     return;
   }
 
-  // Buttons
-  if (interaction.isButton()) {
+  // Register Button
+  if (interaction.isButton() && interaction.customId === "register") {
 
-    if (interaction.customId === "register") {
-      return interaction.reply({
-        content: "🛠️ Register modal baad me add karenge.",
-        ephemeral: true
-      });
-    }
+    const modal = new ModalBuilder()
+      .setCustomId("register_modal")
+      .setTitle("Player Register");
 
-    const gamemodes = {
-      uhc: "UHC",
-      pot: "Pot",
-      mace: "Mace",
-      nethop: "NetHop",
-      smp: "SMP",
-      sword: "Sword",
-      axe: "Axe",
-      vanilla: "Vanilla",
-      cart: "Cart"
-    };
+    const ign = new TextInputBuilder()
+      .setCustomId("ign")
+      .setLabel("Minecraft Username")
+      .setStyle(TextInputStyle.Short)
+      .setRequired(true);
 
-    if (gamemodes[interaction.customId]) {
-      return interaction.reply({
-        content: `✅ You selected **${gamemodes[interaction.customId]}**.`,
-        ephemeral: true
-      });
-    }
+    const region = new TextInputBuilder()
+      .setCustomId("region")
+      .setLabel("Region")
+      .setStyle(TextInputStyle.Short)
+      .setRequired(true);
+
+    const account = new TextInputBuilder()
+      .setCustomId("account")
+      .setLabel("Account Type (Premium/Cracked)")
+      .setStyle(TextInputStyle.Short)
+      .setRequired(true);
+
+    modal.addComponents(
+      new ActionRowBuilder().addComponents(ign),
+      new ActionRowBuilder().addComponents(region),
+      new ActionRowBuilder().addComponents(account)
+    );
+
+    return interaction.showModal(modal);
   }
-
-});
-
-client.login(process.env.TOKEN);
-const http = require("http");
-
-const server = http.createServer((req, res) => {
-  res.end("Bot is online!");
-});
-
-server.listen(process.env.PORT || 3000, () => {
-  console.log("Web server started");
-});
