@@ -14,19 +14,25 @@ const client = new Client({
 
 client.commands = new Collection();
 
+// Load Commands
 const commandsPath = path.join(__dirname, "commands");
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(".js"));
 
 for (const file of commandFiles) {
   const command = require(path.join(commandsPath, file));
-  client.commands.set(command.data.name, command);
+
+  if (command.data && command.execute) {
+    client.commands.set(command.data.name, command);
+  }
 }
 
+// Bot Ready
 client.once("ready", () => {
   console.log(`${client.user.tag} is online!`);
 });
 
-client.on("interactionCreate", async interaction => {
+// Interaction Handler
+client.on("interactionCreate", async (interaction) => {
 
   // Slash Commands
   if (interaction.isChatInputCommand()) {
@@ -37,6 +43,10 @@ client.on("interactionCreate", async interaction => {
       await command.execute(interaction);
     } catch (err) {
       console.error(err);
+      await interaction.reply({
+        content: "❌ Error while executing command.",
+        ephemeral: true
+      });
     }
     return;
   }
@@ -46,12 +56,12 @@ client.on("interactionCreate", async interaction => {
 
     if (interaction.customId === "register") {
       return interaction.reply({
-        content: "🛠️ Register modal next step me add karenge.",
+        content: "🛠️ Register modal baad me add karenge.",
         ephemeral: true
       });
     }
 
-    const roles = {
+    const gamemodes = {
       uhc: "UHC",
       pot: "Pot",
       mace: "Mace",
@@ -63,46 +73,14 @@ client.on("interactionCreate", async interaction => {
       cart: "Cart"
     };
 
-    if (roles[interaction.customId]) {
+    if (gamemodes[interaction.customId]) {
       return interaction.reply({
-        content: `✅ You clicked **${roles[interaction.customId]}**.`,
+        content: `✅ You selected **${gamemodes[interaction.customId]}**.`,
         ephemeral: true
       });
     }
   }
 
-});
-  if (interaction.isChatInputCommand()) {
-   if (interaction.isButton()) {
-  if (interaction.customId === "register") {
-    return interaction.reply({
-      content: "🛠️ Register modal next step me add karenge.",
-      ephemeral: true
-    });
-  }
-
-  const roles = {
-    uhc: "UHC",
-    pot: "Pot",
-    sword: "Sword",
-    axe: "Axe"
-  };
-
-  if (roles[interaction.customId]) {
-    return interaction.reply({
-      content: `✅ You clicked **${roles[interaction.customId]}**.`,
-      ephemeral: true
-    });
-  }
-   } const command = client.commands.get(interaction.commandName);
-    if (!command) return;
-
-    try {
-      await command.execute(interaction);
-    } catch (err) {
-      console.error(err);
-    }
-  }
 });
 
 client.login(process.env.TOKEN);
