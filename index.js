@@ -105,7 +105,12 @@ client.on("interactionCreate", async (interaction) => {
       region,
       account
     });
-
+// Give Queue Role
+try {
+  await interaction.member.roles.add(config.queueRole);
+} catch (err) {
+  console.log("Queue Role Error:", err);
+}
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId("uhc")
